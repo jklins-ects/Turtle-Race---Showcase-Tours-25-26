@@ -8,8 +8,8 @@ TOP_MARGIN = 70
 BOTTOM_MARGIN = 60
 LEFT_MARGIN = 120
 RIGHT_MARGIN = 120
-STEP_MIN, STEP_MAX = 1, 4     # smaller steps = slower race
-SLEEP_DELAY = 0.02            # frame delay
+STEP_MIN, STEP_MAX = 2, 7     # smaller steps = slower race
+SLEEP_DELAY = 0.04            # frame delay
 
 DEFAULT_NAMES = ["Ruby", "Bluey", "Leafy", "Violet", "Sunny", "Cobalt"]
 COLOR_PALETTE = [
@@ -37,7 +37,7 @@ def setup_screen():
     screen = turtle.Screen()
     screen.setup(WIDTH, HEIGHT)
     screen.setworldcoordinates(0, HEIGHT, WIDTH, 0)  # top-left origin
-    screen.title("Turtle Race (Dynamic Racers)")
+    screen.title("Turtle Race!")
     screen.bgcolor("lightblue")
     screen.tracer(0)
     # force screen to appear
@@ -108,8 +108,13 @@ def create_racers(names, colors, lane_ys, start_x):
         n_lbl.hideturtle()
         n_lbl.penup()
         n_lbl.color("black")
-        n_lbl.goto(start_x, y - 26)  # above (remember: up is -Y)
-        n_lbl.write(names[i], align="center", font=("Arial", 12, "bold"))
+        n_lbl.goto(start_x, y - 14)  # above (remember: up is -Y)
+        namedata = names[i].split("#")
+        modifier = ""
+        if len(namedata) > 1:
+            modifier = f"({namedata[1]})"
+        n_lbl.write(namedata[0] + " " + modifier, align="center",
+                    font=("Arial", 12, "bold"))
         name_labels.append(n_lbl)
     return racers, dist_labels, name_labels
 
@@ -119,7 +124,13 @@ def run_race(screen, racers, names, dist_labels, name_labels, lane_ys, start_x, 
     running = True
     while running:
         for i, r in enumerate(racers):
-            step = random.randint(STEP_MIN, STEP_MAX)
+            namedata = names[i].split("#")
+            modifier = ""
+            pace = STEP_MAX - 1
+            if len(namedata) > 1:
+                modifier = f"({namedata[1]})"
+                pace = max(STEP_MIN + 1, int(namedata[1]) % STEP_MAX)
+            step = random.randint(STEP_MIN, pace)
             r.forward(step)
 
             # Follow the racer with labels
@@ -133,8 +144,9 @@ def run_race(screen, racers, names, dist_labels, name_labels, lane_ys, start_x, 
                                  font=("Arial", 12, "bold"))
 
             name_labels[i].clear()
-            name_labels[i].goto(x_now, y_lane - 26)
-            name_labels[i].write(names[i], align="center",
+            name_labels[i].goto(x_now, y_lane - 14)
+
+            name_labels[i].write(namedata[0] + " " + modifier + " pace: " + str(pace), align="center",
                                  font=("Arial", 12, "bold"))
 
             if x_now >= finish_x:
@@ -152,7 +164,8 @@ def show_winner(name):
     banner.penup()
     banner.color("black")
     banner.goto(WIDTH // 2, TOP_MARGIN // 2)
-    banner.write(f"{name} wins!", align="center", font=("Arial", 20, "bold"))
+    banner.write(f"{name.split("#")[0]} wins!",
+                 align="center", font=("Arial", 20, "bold"))
 
 # ---------- MAIN ----------
 
