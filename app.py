@@ -9,7 +9,7 @@ BOTTOM_MARGIN = 60
 LEFT_MARGIN = 120
 RIGHT_MARGIN = 120
 STEP_MIN, STEP_MAX = 2, 7     # smaller steps = slower race
-SLEEP_DELAY = 0.04            # frame delay
+SLEEP_DELAY = 0.06            # frame delay
 
 DEFAULT_NAMES = ["Ruby", "Bluey", "Leafy", "Violet", "Sunny", "Cobalt"]
 COLOR_PALETTE = [
@@ -146,7 +146,7 @@ def run_race(screen, racers, names, dist_labels, name_labels, lane_ys, start_x, 
             name_labels[i].clear()
             name_labels[i].goto(x_now, y_lane - 14)
 
-            name_labels[i].write(namedata[0] + " " + modifier + " pace: " + str(pace), align="center",
+            name_labels[i].write(namedata[0] + " " + modifier + " max-speed: " + str(pace), align="center",
                                  font=("Arial", 12, "bold"))
 
             if x_now >= finish_x:
